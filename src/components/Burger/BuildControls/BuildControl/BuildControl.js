@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import classes from "./BuildControl.module.css";
 
@@ -17,5 +18,11 @@ const buildControl = (props) => (
     </button>
   </div>
 );
+
+buildControl.propTypes = {
+  label: PropTypes.string,
+  removed: PropTypes.func,
+  disabled: PropTypes.bool,
+};
 
 export default buildControl;

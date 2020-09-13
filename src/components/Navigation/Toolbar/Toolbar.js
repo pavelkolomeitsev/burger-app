@@ -1,12 +1,14 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import classes from "./Toolbar.module.css";
 import Logo from "../../Logo/Logo";
 import NavigationItems from "../../Navigation/NavigationItems/NavigationItems";
+import HamburgerIcon from "../HamburgerIcon/HamburgerIcon";
 
-const toolbar = () => (
+const toolbar = (props) => (
   <header className={classes.Toolbar}>
-    <div>MENU</div>
+    <HamburgerIcon open={props.openSideDrawer} />
     <div className={classes.Logo}>
       <Logo />
     </div>
@@ -15,5 +17,9 @@ const toolbar = () => (
     </nav>
   </header>
 );
+
+toolbar.propTypes = {
+  openSideDrawer: PropTypes.func,
+};
 
 export default toolbar;
