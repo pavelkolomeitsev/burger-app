@@ -16,6 +16,11 @@ class ContactData extends Component {
           placeholder: "Your Name",
         },
         value: "",
+        validation: {
+          required: true,
+        },
+        valid: false,
+        touched: false,
       },
 
       // country: {
@@ -34,6 +39,11 @@ class ContactData extends Component {
           placeholder: "Street",
         },
         value: "",
+        validation: {
+          required: true,
+        },
+        valid: false,
+        touched: false,
       },
       postcode: {
         elementType: "input",
@@ -42,6 +52,13 @@ class ContactData extends Component {
           placeholder: "Post code",
         },
         value: "",
+        validation: {
+          required: true,
+          minLength: 5,
+          maxLength: 5,
+        },
+        valid: false,
+        touched: false,
       },
 
       email: {
@@ -51,6 +68,11 @@ class ContactData extends Component {
           placeholder: "Email",
         },
         value: "",
+        validation: {
+          required: true,
+        },
+        valid: false,
+        touched: false,
       },
       deliveryMethod: {
         elementType: "select",
@@ -60,7 +82,8 @@ class ContactData extends Component {
             { value: "cheapest", displayValue: "Cheapest" },
           ],
         },
-        value: "",
+        value: "fastest",
+        validation: {},
       },
     },
     loading: false,
@@ -70,20 +93,16 @@ class ContactData extends Component {
     event.preventDefault();
 
     this.setState({ loading: true });
+
+    const formData = {};
+
+    for (const key in this.state.orderForm) {
+      formData[key] = this.state.orderForm[key].value;
+    }
     const order = {
       ingredients: this.props.ingredients,
       price: +this.props.price,
-      customer: {
-        name: "Pavel",
-        address: {
-          country: "Ukraine",
-          city: "Vinnytsya",
-          street: "Nezalezshnosti, 145",
-          postcode: "23219",
-        },
-        email: "test@test.com",
-      },
-      deliveryMethod: "fast",
+      orderData: formData,
     };
     axiosInstance
       .post("/orders.json", order)
@@ -96,10 +115,33 @@ class ContactData extends Component {
       });
   };
 
+  checkValidity(value, rules) {
+    let isValid = true;
+
+    if (rules.required) {
+      isValid = value.trim() !== "" && isValid;
+    }
+
+    if (rules.minLength) {
+      isValid = value.length >= rules.minLength && isValid;
+    }
+
+    if (rules.maxLength) {
+      isValid = value.length <= rules.maxLength && isValid;
+    }
+
+    return isValid;
+  }
+
   inputChangedHandler = (event, inputIdentifier) => {
     const updatedOrderForm = { ...this.state.orderForm };
     const updatedElement = { ...updatedOrderForm[inputIdentifier] }; // deep copy
     updatedElement.value = event.target.value;
+    updatedElement.valid = this.checkValidity(
+      updatedElement.value,
+      updatedElement.validation
+    );
+    updatedElement.touched = true;
     updatedOrderForm[inputIdentifier] = updatedElement;
     this.setState({ orderForm: updatedOrderForm });
   };
@@ -115,13 +157,16 @@ class ContactData extends Component {
     }
 
     let form = (
-      <form>
+      <form onSubmit={this.orderHandler}>
         {elementsArray.map((element) => (
           <Input
             key={element.id}
             elementType={element.config.elementType}
             elementConfig={element.config.elementConfig}
             value={element.config.value}
+            invalid={!element.config.valid}
+            shouldValidate={element.config.validation}
+            touched={element.config.touched}
             changed={(event) => this.inputChangedHandler(event, element.id)}
           />
         ))}
