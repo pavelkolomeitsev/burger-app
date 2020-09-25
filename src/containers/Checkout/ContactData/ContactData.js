@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 
 import classes from "./ContactData.module.css";
 import Button from "../../../components/UI/Button/Button";
@@ -23,15 +24,6 @@ class ContactData extends Component {
         touched: false,
       },
 
-      // country: {
-      //   elementType: "input",
-      //   elementConfig: {
-      //     type: 'text',
-      //     placeholder: "Country"
-      //   },
-      //   value: ""
-      // },
-      // city: "Vinnytsya",
       street: {
         elementType: "input",
         elementConfig: {
@@ -100,8 +92,8 @@ class ContactData extends Component {
       formData[key] = this.state.orderForm[key].value;
     }
     const order = {
-      ingredients: this.props.ingredients,
-      price: +this.props.price,
+      ingredients: this.props.ingreds,
+      price: +this.props.totPrice,
       orderData: formData,
     };
     axiosInstance
@@ -189,4 +181,11 @@ class ContactData extends Component {
   }
 }
 
-export default ContactData;
+const mapStateToProps = (state) => {
+  return {
+    ingreds: state.ingredients,
+    totPrice: state.totalPrice,
+  };
+};
+
+export default connect(mapStateToProps)(ContactData);
