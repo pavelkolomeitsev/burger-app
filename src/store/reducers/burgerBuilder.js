@@ -40,6 +40,7 @@ const reducer = (state = initialState, action) => {
       changedState = {
         ...state,
         ingredients: action.ingredients,
+        totalPrice: 4,
       };
       break;
     case actionTypes.FETCH_INGREDIENTS_FAILED:
