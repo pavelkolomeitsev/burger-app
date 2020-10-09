@@ -8,7 +8,7 @@ const initialState = {
 };
 
 const reducer = (state = initialState, action) => {
-  let changedState = null;
+  let changedState = state;
 
   switch (action.type) {
     case actionTypes.AUTH_START:
