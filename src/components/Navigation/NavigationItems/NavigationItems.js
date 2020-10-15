@@ -17,5 +17,5 @@ navigationItems.propTypes = {
   active: PropTypes.bool,
   link: PropTypes.string,
 };
-
+ 
 export default navigationItems;
